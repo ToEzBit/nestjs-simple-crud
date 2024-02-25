@@ -30,7 +30,20 @@ export class AuthService {
     }
   }
 
-  signin() {
-    return { message: 'I have signin' };
+  async signin(dto: AuthDto) {
+    const user = await this.prisma.user.findUnique({
+      where: {
+        email: dto.email,
+      },
+    });
+
+    if (!user) throw new ForbiddenException('Creatential incorrect');
+
+    const isPasswordMatch = await argon.verify(user.hash, dto.password);
+
+    if (!isPasswordMatch) throw new ForbiddenException('Creatential incorrect');
+
+    delete user.hash;
+    return user;
   }
 }
