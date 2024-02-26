@@ -4,6 +4,7 @@ import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
 import { BookmarkModule } from './bookmark/bookmark.module';
 import { PrismaModule } from './prisma/prisma.module';
+import { ServiceController } from './service/service.controller';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -14,5 +15,6 @@ import { PrismaModule } from './prisma/prisma.module';
     BookmarkModule,
     PrismaModule,
   ],
+  controllers: [ServiceController],
 })
 export class AppModule {}
