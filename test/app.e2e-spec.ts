@@ -4,6 +4,7 @@ import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { PrismaService } from '../src/prisma/prisma.service';
 import * as pactum from 'pactum';
 import { AuthDto } from '../src/auth/dto';
+import { EditUserDto } from 'src/user/dto';
 
 describe('App e2e', () => {
   let app: INestApplication;
@@ -67,7 +68,6 @@ describe('App e2e', () => {
     });
 
     describe('Signin', () => {
-      let accessToken: string;
       it('should thorw if email empty', () => {
         return pactum
           .spec()
@@ -111,7 +111,26 @@ describe('App e2e', () => {
           .expectStatus(200);
       });
     });
-    describe('Edit User', () => {});
+    describe('Edit User', () => {
+      const dto: EditUserDto = {
+        firstName: 'Darth',
+        lastName: 'Veder',
+        email: 'darthVeder@sith.com',
+      };
+      it('should edit user', () => {
+        return pactum
+          .spec()
+          .patch('/user')
+          .withHeaders({
+            Authorization: `Bearer $S{userAccessToken}`,
+          })
+          .withBody(dto)
+          .expectStatus(200)
+          .expectBodyContains(dto.firstName)
+          .expectBodyContains(dto.lastName)
+          .expectBodyContains(dto.email);
+      });
+    });
   });
 
   describe('Bookmarks', () => {
